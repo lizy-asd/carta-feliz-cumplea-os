@@ -3,24 +3,29 @@
 }
 
 /* Fondo general */
+/* Fondo general */
 body {
     margin: 0;
     font-family: 'Playfair Display', serif;
     background: #f7eefc;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;      /* ya no centrada vertical */
     min-height: 100vh;
+    padding: 24px 0 80px;         /* espacio arriba y ABAJO para separar de la marca de agua */
+    overflow-y: auto;
 }
 
 /* Contenedor carta + marca de agua */
 .card-wrapper {
-    width: 400px;
+    width: 100%;
+    max-width: 380px;             /* más angosta en pantallas grandes */
+    padding: 0 16px;              /* aire a los lados en celular */
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
-    perspective: 1400px;           /* profundidad para el 3D */
+    perspective: 1400px;
 }
 
 /* Carta – tamaño fijo y visible */
@@ -29,9 +34,11 @@ body {
     height: 560px;
     position: relative;
     cursor: pointer;
-    transform-style: preserve-3d;  /* habilita 3D para las caras */
+    transform-style: preserve-3d;
     transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+    border-radius: 24px;
 }
+
 
 /* BASE: siempre visible (borde dorado + fondo blanco) */
 .card-base {
@@ -250,20 +257,22 @@ body {
 
 .watermark-page {
   position: fixed;
-  bottom: 20px;
+  bottom: 10px;   /* un pelín más abajo */
   left: 50%;
   transform: translateX(-50%);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 400;
   letter-spacing: 0.14em;
-  color: rgba(148, 163, 184, 0.32);
+  color: rgba(148, 163, 184, 0.30);  /* un poco más suave */
   text-transform: none;
   font-style: normal;
   opacity: 1;
   pointer-events: none;
   user-select: none;
+  z-index: 0;     /* detrás de la carta visualmente */
 }
+
 
 @keyframes glow-frame {
     0% {
@@ -309,5 +318,6 @@ body {
     50%  { transform: translateY(-6px); opacity: 1;   }
     100% { transform: translateY(0);   opacity: 0.9; }
 }
+
 
 
