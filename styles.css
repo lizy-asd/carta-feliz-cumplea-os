@@ -1,0 +1,313 @@
+* {
+    box-sizing: border-box;
+}
+
+/* Fondo general */
+body {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    background: #f7eefc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Contenedor carta + marca de agua */
+.card-wrapper {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    perspective: 1400px;           /* profundidad para el 3D */
+}
+
+/* Carta – tamaño fijo y visible */
+.card {
+    width: 100%;
+    height: 560px;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;  /* habilita 3D para las caras */
+    transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* BASE: siempre visible (borde dorado + fondo blanco) */
+.card-base {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    border: 4px solid #d8b760;
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+    z-index: 0;
+}
+
+/* Caras de la carta (portada/interior) */
+.card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    overflow: hidden;
+    backface-visibility: hidden;   /* importante para el flip 3D */
+    z-index: 1;
+}
+
+/* ========================= */
+/* PORTADA: FONDO DE AGUA    */
+/* ========================= */
+
+.card-front {
+    background-image: url('portada.jpg\ \(2\).png');
+    background-size: cover;
+    background-position: center;
+    transform: rotateY(0deg);
+
+    /* Marco dorado con brillo animado */
+    box-shadow:
+        0 0 0 2px rgba(218, 180, 80, 0.8),
+        0 0 18px rgba(244, 114, 182, 0.7);
+    animation: glow-frame 3s ease-in-out infinite alternate;
+}
+
+
+/* capa translúcida encima de la imagen para efecto "agua" */
+.card-front::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.55); /* más blanco pastel */
+    backdrop-filter: blur(1px);         /* suave y elegante */
+    z-index: 0;
+}
+
+/* capa donde va el texto, por encima del efecto */
+.front-overlay {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* texto "Feliz Cumpleaños" centrado */
+.front-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    width: 90%;
+}
+
+.front-text h1 {
+    font-size: 42px;
+    margin: 10px 0;
+    color: #d4af37; /* dorado más intenso */
+    text-shadow:
+        0 0 4px rgba(255,255,255,0.9),
+        0 0 10px rgba(212,175,55,0.7);
+    position: relative;
+    overflow: hidden;
+
+}
+
+.front-text h1::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -130%;
+    width: 130%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255,255,255,0.85) 50%,
+        transparent 100%
+    );
+    mix-blend-mode: screen;
+    animation: title-shine 3.2s ease-in-out infinite;
+}
+@keyframes title-shine {
+    0%   { left: -130%; }
+    60%  { left: 130%; }
+    100% { left: 130%; }
+}
+
+/* Frase pequeña arriba y abajo del título */
+.front-tagline {
+    display: block;
+    font-size: 19px;
+    color: #7b6b8c;
+    margin-bottom: 12px;
+    font-family: 'Dancing Script', cursive;
+    font-weight: 600;
+}
+
+.front-sub {
+    display: block;
+    font-size: 18px;
+    color: #7b6b8c;
+    margin-top: 10px;
+    font-family: 'Dancing Script', cursive;
+    font-weight: 600;
+}
+
+
+/* ========================= */
+/* INTERIOR: SANRIO + TEXTO  */
+/* ========================= */
+
+.card-inside {
+    background-image: url('imagen-fondo.jpg'); /* tu imagen sanrio */
+    background-size: cover;
+    background-position: center;
+    transform: rotateY(180deg);  /* cara trasera para el flip */
+}
+
+/* Capa blanca suave para texto */
+.inside-overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.82);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 30px 32px;      /* menos padding para ganar espacio */
+    text-align: center;
+
+    color: #6a5378;
+    font-size: 16px;         /* un poquito más pequeño */
+    line-height: 1.7;
+
+    overflow-y: auto;        /* IMPORTANTE: permite ver TODO el texto */
+    scrollbar-width: none; /* oculta scroll en Firefox */
+    font-family: 'Dancing Script', cursive;  
+}
+
+/* Oculta scroll en Chrome/Edge */
+.inside-overlay::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+
+.gold-title {
+    font-size: 28px;
+    color: #bea131;
+    margin-bottom: 28px;
+    font-weight: 700;
+    text-shadow: 0 0 4px #ffffff;
+}
+
+/* Estado abierta: giro 3D completo */
+.card.open {
+    transform: rotateY(180deg);
+}
+
+/* Marca de agua fuera de la carta */
+
+
+/* ========================= */
+/* PARTÍCULAS DORADAS NEÓN   */
+/* ========================= */
+
+.sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    /* color base, pero lo cambiamos por JS con background */
+    background: radial-gradient(circle, #facc15 0%, #a16207 60%, transparent 100%);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.9);
+    animation: sparkle-float 1.2s ease-out forwards;
+}
+
+/* animación de flotado + desvanecido */
+@keyframes sparkle-float {
+    0% {
+        transform: translateY(0) scale(0.4);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-40px) scale(1.1);
+        opacity: 0;
+    }
+}
+
+.watermark-page {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: rgba(148, 163, 184, 0.32);
+  text-transform: none;
+  font-style: normal;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes glow-frame {
+    0% {
+        box-shadow:
+            0 0 0 1px rgba(218, 180, 80, 0.7),
+            0 0 10px rgba(244, 114, 182, 0.5);
+    }
+    100% {
+        box-shadow:
+            0 0 0 2px rgba(250, 204, 21, 0.9),
+            0 0 24px rgba(129, 140, 248, 0.7);
+    }
+}
+
+.front-stickers {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    z-index: 2;
+}
+
+.sticker {
+    font-size: 26px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+    animation: float-sticker 3.5s ease-in-out infinite;
+}
+
+.sticker:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.sticker:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+@keyframes float-sticker {
+    0%   { transform: translateY(0);   opacity: 0.9; }
+    50%  { transform: translateY(-6px); opacity: 1;   }
+    100% { transform: translateY(0);   opacity: 0.9; }
+}
+
+
